@@ -214,32 +214,32 @@ CANCTRL_REQOP_LISTENONLY = 0x60
 CANCTRL_REQOP_CONFIG     = 0x80
 CANCTRL_REQOP_POWERUP    = 0xE0
 
-static const uint8_t CANSTAT_OPMOD = 0xE0
-static const uint8_t CANSTAT_ICOD = 0x0E
+CANSTAT_OPMOD = 0xE0
+CANSTAT_ICOD = 0x0E
 
-static const uint8_t CNF3_SOF = 0x80
+CNF3_SOF = 0x80
 
-static const uint8_t TXB_EXIDE_MASK = 0x08
-static const uint8_t DLC_MASK       = 0x0F
-static const uint8_t RTR_MASK       = 0x40
+TXB_EXIDE_MASK = 0x08
+DLC_MASK       = 0x0F
+RTR_MASK       = 0x40
 
-static const uint8_t RXBnCTRL_RXM_STD    = 0x20
-static const uint8_t RXBnCTRL_RXM_EXT    = 0x40
-static const uint8_t RXBnCTRL_RXM_STDEXT = 0x00
-static const uint8_t RXBnCTRL_RXM_MASK   = 0x60
-static const uint8_t RXBnCTRL_RTR        = 0x08
-static const uint8_t RXB0CTRL_BUKT       = 0x04
-static const uint8_t RXB0CTRL_FILHIT_MASK = 0x03
-static const uint8_t RXB1CTRL_FILHIT_MASK = 0x07
-static const uint8_t RXB0CTRL_FILHIT = 0x00
-static const uint8_t RXB1CTRL_FILHIT = 0x01
+RXBnCTRL_RXM_STD    = 0x20
+RXBnCTRL_RXM_EXT    = 0x40
+RXBnCTRL_RXM_STDEXT = 0x00
+RXBnCTRL_RXM_MASK   = 0x60
+RXBnCTRL_RTR        = 0x08
+RXB0CTRL_BUKT       = 0x04
+RXB0CTRL_FILHIT_MASK = 0x03
+RXB1CTRL_FILHIT_MASK = 0x07
+RXB0CTRL_FILHIT = 0x00
+RXB1CTRL_FILHIT = 0x01
 
-static const uint8_t MCP_SIDH = 0
-static const uint8_t MCP_SIDL = 1
-static const uint8_t MCP_EID8 = 2
-static const uint8_t MCP_EID0 = 3
-static const uint8_t MCP_DLC  = 4
-static const uint8_t MCP_DATA = 5
+MCP_SIDH = 0
+MCP_SIDL = 1
+MCP_EID8 = 2
+MCP_EID0 = 3
+MCP_DLC  = 4
+MCP_DATA = 5
 
 # enum /*class*/ STAT : uint8_t {
 STAT_RX0IF = (1<<0)
