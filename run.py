@@ -4,9 +4,9 @@ from globals import *
 
 BUS = 0 # We only have SPI bus 0 available to us on the Pi
 DEVICE = 0 # Device is the chip select pin. Set to 0 or 1, depending on the connections
+spi = spidev.SpiDev()
 
 def main():
-    spi = spidev.SpiDev()
     spi.open(BUS, DEVICE)
     spi.max_speed_hz = 10000000
     spi.mode = 0
