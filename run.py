@@ -24,6 +24,13 @@ def main():
     print(reply)
 
 
+def modifyRegister(reg, mask, data):
+    command = [INSTRUCTION_BITMOD, reg, mask, data]
+    spi.xfer2(command)
+
+def readRegister(reg):
+    return spi.xfer2(INSTRUCTION_READ, reg, 0x00)[2]
+
 def reset():
     spi.xfer2([INSTRUCTION_RESET])
 
@@ -68,6 +75,7 @@ def reset():
 
     return ERROR_OK
 
+
 def setRegister(reg, value):
     setRegisters(reg, [value])
 
@@ -77,10 +85,6 @@ def setRegisters(reg, values):
     """
     command = [INSTRUCTION_WRITE, reg]
     command += values
-    spi.xfer2(command)
-
-def modifyRegister(reg, mask, data):
-    command = [INSTRUCTION_BITMOD, reg, mask, data]
     spi.xfer2(command)
 
 def setFilter(num, ext, ulData):
