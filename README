@@ -1,0 +1,8 @@
+README
+
+Using MCP251x MCP2515 MCP25625 on a Raspberry Pi 5 over SPI
+
+Made this because when I try to use overlays/built in drivers it locks up completely, there are 5 year old posts about it being a kernel bug, can't fix it..
+
+Ported from known working Arduino code
+https://github.com/autowp/arduino-mcp2515
