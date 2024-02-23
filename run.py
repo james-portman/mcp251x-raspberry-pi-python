@@ -6,22 +6,22 @@ BUS = 0 # We only have SPI bus 0 available to us on the Pi
 DEVICE = 0 # Device is the chip select pin. Set to 0 or 1, depending on the connections
 
 def main():
-	spi = spidev.SpiDev()
-	spi.open(BUS, DEVICE)
-	spi.max_speed_hz = 10000000
-	spi.mode = 0
+    spi = spidev.SpiDev()
+    spi.open(BUS, DEVICE)
+    spi.max_speed_hz = 10000000
+    spi.mode = 0
 
-	if reset() != ERROR_OK:
-		print("some error running reset")
-		exit(1)
+    if reset() != ERROR_OK:
+        print("some error running reset")
+        exit(1)
 
-	if setBitrate(CAN_1000KBPS, MCP_16MHZ) != ERROR_OK:
-		print("error setting bitrate")
-		exit(1)
+    if setBitrate(CAN_1000KBPS, MCP_16MHZ) != ERROR_OK:
+        print("error setting bitrate")
+        exit(1)
 
 
-	reply = spi.xfer2([INSTRUCTION_READ, MCP_RXF0SIDH, 0])
-	print(reply)
+    reply = spi.xfer2([INSTRUCTION_READ, MCP_RXF0SIDH, 0])
+    print(reply)
 
 
 def reset():
@@ -31,7 +31,7 @@ def reset():
 
     zeros = []
     for _ in range(14):
-    	zeros.append(0)
+        zeros.append(0)
     setRegisters(MCP_TXB0CTRL, zeros)
     setRegisters(MCP_TXB1CTRL, zeros)
     setRegisters(MCP_TXB2CTRL, zeros)
@@ -62,44 +62,44 @@ def reset():
 
     masks = [MASK0, MASK1]
     for i in range(len(masks)):
-        ERROR result = setFilterMask(masks[i], true, 0)
+        result = setFilterMask(masks[i], true, 0)
         if (result != ERROR_OK):
             return result
 
     return ERROR_OK
 
-def setRegister(reg, value)
-	setRegisters(reg, [value])
+def setRegister(reg, value):
+    setRegisters(reg, [value])
 
 def setRegisters(reg, values):
-	"""
-	values is an array/list
-	"""
-	command = [INSTRUCTION_WRITE, reg]
-	command += values
-	spi.xfer2(command)
+    """
+    values is an array/list
+    """
+    command = [INSTRUCTION_WRITE, reg]
+    command += values
+    spi.xfer2(command)
 
-def modifyRegister(reg, mask, data)
-	command = [INSTRUCTION_BITMOD, reg, mask, data]
-	spi.xfer2(command)
+def modifyRegister(reg, mask, data):
+    command = [INSTRUCTION_BITMOD, reg, mask, data]
+    spi.xfer2(command)
 
 def setFilter(num, ext, ulData):
-    ERROR res = setConfigMode()
+    res = setConfigMode()
     if res != ERROR_OK:
         return res
 
     if num == RXF0:
-    	reg = MCP_RXF0SIDH
+        reg = MCP_RXF0SIDH
     elif num == RXF1:
-    	reg = MCP_RXF1SIDH
+        reg = MCP_RXF1SIDH
     elif num == RXF2:
-    	reg = MCP_RXF2SIDH
+        reg = MCP_RXF2SIDH
     elif num == RXF3:
-    	reg = MCP_RXF3SIDH
+        reg = MCP_RXF3SIDH
     elif num == RXF4:
-    	reg = MCP_RXF4SIDH
+        reg = MCP_RXF4SIDH
     elif num == RXF5:
-    	reg = MCP_RXF5SIDH
+        reg = MCP_RXF5SIDH
     else:
         return ERROR_FAIL
 
@@ -122,12 +122,12 @@ def setMode(mode):
         if modeMatch:
             break
     if modeMatch:
-    	return ERROR_OK
+        return ERROR_OK
     else:
-    	return ERROR_FAIL
+        return ERROR_FAIL
 
-def prepareId(ext, id)
-	buffer = []
+def prepareId(ext, id):
+    buffer = []
     canid = id & 0x0FFFF
 
     if ext:
@@ -148,7 +148,7 @@ def prepareId(ext, id)
 
 def setFilterMask(mask, ext, ulData):
 
-    ERROR res = setConfigMode()
+    res = setConfigMode()
     if (res != ERROR_OK):
         return res
     
@@ -157,10 +157,10 @@ def setFilterMask(mask, ext, ulData):
 
     # REGISTER reg;
     if mask == MASK0:
-    	reg = MCP_RXM0SIDH
+        reg = MCP_RXM0SIDH
     elif mask == MASK1:
-    	reg = MCP_RXM1SIDH
-   	else:
+        reg = MCP_RXM1SIDH
+    else:
         return ERROR_FAIL
 
     setRegisters(reg, tbufdata, 4)
@@ -169,7 +169,7 @@ def setFilterMask(mask, ext, ulData):
 
 def setBitrate(canSpeed, canClock):
 
-    ERROR error = setConfigMode();
+    error = setConfigMode();
     if (error != ERROR_OK):
         return error
 
@@ -363,35 +363,35 @@ def setBitrate(canSpeed, canClock):
             cfg3 = MCP_20MHz_100kBPS_CFG3;
 
         elif canSpeed == CAN_125KBPS:
-            cfg1 = MCP_20MHz_125kBPS_CFG1;
-            cfg2 = MCP_20MHz_125kBPS_CFG2;
-            cfg3 = MCP_20MHz_125kBPS_CFG3;
+            cfg1 = MCP_20MHz_125kBPS_CFG1
+            cfg2 = MCP_20MHz_125kBPS_CFG2
+            cfg3 = MCP_20MHz_125kBPS_CFG3
 
         elif canSpeed == CAN_200KBPS:
-            cfg1 = MCP_20MHz_200kBPS_CFG1;
-            cfg2 = MCP_20MHz_200kBPS_CFG2;
-            cfg3 = MCP_20MHz_200kBPS_CFG3;
+            cfg1 = MCP_20MHz_200kBPS_CFG1
+            cfg2 = MCP_20MHz_200kBPS_CFG2
+            cfg3 = MCP_20MHz_200kBPS_CFG3
 
         elif canSpeed == CAN_250KBPS:
-            cfg1 = MCP_20MHz_250kBPS_CFG1;
-            cfg2 = MCP_20MHz_250kBPS_CFG2;
-            cfg3 = MCP_20MHz_250kBPS_CFG3;
+            cfg1 = MCP_20MHz_250kBPS_CFG1
+            cfg2 = MCP_20MHz_250kBPS_CFG2
+            cfg3 = MCP_20MHz_250kBPS_CFG3
 
         elif canSpeed == CAN_500KBPS:
-            cfg1 = MCP_20MHz_500kBPS_CFG1;
-            cfg2 = MCP_20MHz_500kBPS_CFG2;
-            cfg3 = MCP_20MHz_500kBPS_CFG3;
+            cfg1 = MCP_20MHz_500kBPS_CFG1
+            cfg2 = MCP_20MHz_500kBPS_CFG2
+            cfg3 = MCP_20MHz_500kBPS_CFG3
 
         elif canSpeed == CAN_1000KBPS:
-            cfg1 = MCP_20MHz_1000kBPS_CFG1;
-            cfg2 = MCP_20MHz_1000kBPS_CFG2;
-            cfg3 = MCP_20MHz_1000kBPS_CFG3;
+            cfg1 = MCP_20MHz_1000kBPS_CFG1
+            cfg2 = MCP_20MHz_1000kBPS_CFG2
+            cfg3 = MCP_20MHz_1000kBPS_CFG3
 
         else:
-            set = 0;
+            set = 0
 
     else:
-        set = 0;
+        set = 0
 
     if (set):
         setRegister(MCP_CNF1, cfg1)
@@ -404,4 +404,4 @@ def setBitrate(canSpeed, canClock):
 
 
 if __name__ == "__main__":
-	main():
+    main()
