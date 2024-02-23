@@ -14,24 +14,34 @@ def main():
     spi.max_speed_hz = 10000000
     spi.mode = 0
 
+    print("resetting chip")
     if reset() != ERROR_OK:
         print("some error running reset")
         exit(1)
 
+    print("setting CAN baud and chip crystal frequency")
     if setBitrate(CAN_1000KBPS, MCP_16MHZ) != ERROR_OK:
         print("error setting bitrate")
         exit(1)
 
+    print("setting CAN normal mode")
     if setNormalMode() != ERROR_OK:
         print("error setting normal mode")
         exit(1)
     time.sleep(0.025)
 
-    error, can_msg = readMessage()
-    if error == ERROR_OK:
-        print("got a can message")
-    else:
-        print("didnt get a can message")
+    print("starting to read messages if available...")
+    n_frames = 0
+    while True:
+        error, can_msg = readMessage()
+        if error == ERROR_OK:
+            n_frames += 1
+            print("got a can message", hex(can_msg["can_id"]), n_frames, "total CAN frames")
+            print(can_msg)
+            # print(hex(can_msg["can_id"]))
+        else:
+            # print("didnt get a can message")
+            time.sleep(0.010)
 
 def getStatus():
     return spi.xfer2([INSTRUCTION_READ_STATUS, 0x00])[1]
