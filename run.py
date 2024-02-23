@@ -29,7 +29,7 @@ def modifyRegister(reg, mask, data):
     spi.xfer2(command)
 
 def readRegister(reg):
-    return spi.xfer2(INSTRUCTION_READ, reg, 0x00)[2]
+    return spi.xfer2([INSTRUCTION_READ, reg, 0x00])[2]
 
 def reset():
     spi.xfer2([INSTRUCTION_RESET])
@@ -69,7 +69,7 @@ def reset():
 
     masks = [MASK0, MASK1]
     for i in range(len(masks)):
-        result = setFilterMask(masks[i], true, 0)
+        result = setFilterMask(masks[i], True, 0)
         if (result != ERROR_OK):
             return result
 
@@ -108,7 +108,7 @@ def setFilter(num, ext, ulData):
         return ERROR_FAIL
 
     buffer = prepareId(ext, ulData)
-    setRegisters(reg, buffer, 4)
+    setRegisters(reg, buffer)
 
     return ERROR_OK
 
@@ -141,7 +141,7 @@ def prepareId(ext, id):
         buffer[MCP_SIDL] = (canid & 0x03)
         buffer[MCP_SIDL] += ((canid & 0x1C) << 3)
         buffer[MCP_SIDL] |= TXB_EXIDE_MASK
-        buffer[MCP_SIDH] = (uint8_t) (canid >> 5)
+        buffer[MCP_SIDH] = (canid >> 5)
     else:
         buffer[MCP_SIDH] = (canid >> 3)
         buffer[MCP_SIDL] = ((canid & 0x07 ) << 5)
@@ -167,7 +167,7 @@ def setFilterMask(mask, ext, ulData):
     else:
         return ERROR_FAIL
 
-    setRegisters(reg, tbufdata, 4)
+    setRegisters(reg, tbufdata)
     return ERROR_OK
 
 

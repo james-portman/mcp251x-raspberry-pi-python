@@ -126,9 +126,9 @@ MCP_20MHz_33k3BPS_CFG3 = 0x87
 
 
 # enum CAN_CLOCK {
-#     MCP_20MHZ,
-#     MCP_16MHZ,
-#     MCP_8MHZ
+MCP_20MHZ = 0
+MCP_16MHZ = 1
+MCP_8MHZ = 2
 # };
 
 # enum CAN_SPEED {
