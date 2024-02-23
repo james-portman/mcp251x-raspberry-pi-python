@@ -311,7 +311,6 @@ def setBitrate(canSpeed, canClock):
             cfg1 = MCP_16MHz_200kBPS_CFG1;
             cfg2 = MCP_16MHz_200kBPS_CFG2;
             cfg3 = MCP_16MHz_200kBPS_CFG3;
-            break;
 
         elif canSpeed == CAN_250KBPS:
             cfg1 = MCP_16MHz_250kBPS_CFG1;
