@@ -1,3 +1,6 @@
+"""
+maybe change the errors to raise exception from inside the functions
+"""
 import time
 import spidev
 from globals import *
@@ -19,10 +22,19 @@ def main():
         print("error setting bitrate")
         exit(1)
 
+    if setNormalMode() != ERROR_OK:
+        print("error setting normal mode")
+        exit(1)
+    time.sleep(0.025)
 
-    reply = spi.xfer2([INSTRUCTION_READ, MCP_RXF0SIDH, 0])
-    print(reply)
+    error, can_msg = readMessage()
+    if error == ERROR_OK:
+        print("got a can message")
+    else:
+        print("didnt get a can message")
 
+def getStatus():
+    return spi.xfer2([INSTRUCTION_READ_STATUS, 0x00])[1]
 
 def modifyRegister(reg, mask, data):
     command = [INSTRUCTION_BITMOD, reg, mask, data]
@@ -30,6 +42,56 @@ def modifyRegister(reg, mask, data):
 
 def readRegister(reg):
     return spi.xfer2([INSTRUCTION_READ, reg, 0x00])[2]
+
+def readRegisters(reg, n):
+    command = [INSTRUCTION_READ, reg]
+    # mcp2515 has auto-increment of address-pointer
+    for i in range(n):
+        command.append(0x00)
+    data = spi.xfer2(command)[2:]
+    return data
+
+
+def readMessage():
+    stat = getStatus()
+    if ( stat & STAT_RX0IF ):
+        rc, frame = readMessage_rxbn(RXB0)
+    elif ( stat & STAT_RX1IF ):
+        rc, frame = readMessage_rxbn(RXB1)
+    else:
+        rc, frame = ERROR_NOMSG, None
+    return rc, frame
+
+def readMessage_rxbn(rxbn):
+    frame = {}
+
+    tbufdata = readRegisters(RXB[rxbn][SIDH], 5)
+
+    id = (tbufdata[MCP_SIDH]<<3) + (tbufdata[MCP_SIDL]>>5)
+
+    if ( (tbufdata[MCP_SIDL] & TXB_EXIDE_MASK) ==  TXB_EXIDE_MASK ):
+        id = (id<<2) + (tbufdata[MCP_SIDL] & 0x03)
+        id = (id<<8) + tbufdata[MCP_EID8]
+        id = (id<<8) + tbufdata[MCP_EID0]
+        id |= CAN_EFF_FLAG
+
+    dlc = (tbufdata[MCP_DLC] & DLC_MASK)
+    if (dlc > CAN_MAX_DLEN):
+        return ERROR_FAIL, None
+
+    ctrl = readRegister(RXB[rxbn][CTRL])
+    if (ctrl & RXBnCTRL_RTR):
+        id |= CAN_RTR_FLAG
+
+    frame["can_id"] = id
+    frame["can_dlc"] = dlc
+
+    frame["data"] = readRegisters(RXB[rxbn][DATA], dlc)
+
+    modifyRegister(MCP_CANINTF, RXB[rxbn][CANINTF_RXnIF], 0)
+
+    return ERROR_OK, frame
+
 
 def reset():
     spi.xfer2([INSTRUCTION_RESET])
@@ -114,6 +176,9 @@ def setFilter(num, ext, ulData):
 
 def setConfigMode():
     return setMode(CANCTRL_REQOP_CONFIG)
+
+def setNormalMode():
+    return setMode(CANCTRL_REQOP_NORMAL)
 
 def setMode(mode):
     modifyRegister(MCP_CANCTRL, CANCTRL_REQOP, mode)

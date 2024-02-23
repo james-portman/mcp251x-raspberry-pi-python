@@ -347,24 +347,47 @@ MCP_RXB1EID0 = 0x74
 MCP_RXB1DLC  = 0x75
 MCP_RXB1DATA = 0x76
 
+CTRL = 0
+SIDH = 1
+DATA = 2
+CANINTF_RXnIF = 3
+
 DEFAULT_SPI_CLOCK = 10000000 # 10MHz
 
-N_TXBUFFERS = 3
-N_RXBUFFERS = 2
+# N_TXBUFFERS = 3
+# N_RXBUFFERS = 2
 
-# static const struct TXBn_REGS {
-#     REGISTER CTRL;
-#     REGISTER SIDH;
-#     REGISTER DATA;
-# } TXB[N_TXBUFFERS];
+TXB = [
+    {MCP_TXB0CTRL, MCP_TXB0SIDH, MCP_TXB0DATA},
+    {MCP_TXB1CTRL, MCP_TXB1SIDH, MCP_TXB1DATA},
+    {MCP_TXB2CTRL, MCP_TXB2SIDH, MCP_TXB2DATA}
+]
 
-# static const struct RXBn_REGS {
-#     REGISTER CTRL;
-#     REGISTER SIDH;
-#     REGISTER DATA;
-#     CANINTF  CANINTF_RXnIF;
-# } RXB[N_RXBUFFERS];
+RXB = [
+    {MCP_RXB0CTRL, MCP_RXB0SIDH, MCP_RXB0DATA, CANINTF_RX0IF},
+    {MCP_RXB1CTRL, MCP_RXB1SIDH, MCP_RXB1DATA, CANINTF_RX1IF}
+]
 
-# uint8_t SPICS;
-# uint32_t SPI_CLOCK;
-# SPIClass * SPIn;
+CAN_EFF_FLAG = 0x80000000 # /* EFF/SFF is set in the MSB */
+CAN_RTR_FLAG = 0x40000000 # /* remote transmission request */
+CAN_ERR_FLAG = 0x20000000 # /* error message frame */
+CAN_MAX_DLEN = 8
+
+# /* CAN payload length and DLC definitions according to ISO 11898-1 */
+# #define CAN_MAX_DLC 8
+# #define CAN_MAX_RAW_DLC 15
+# #define CAN_MAX_DLEN 8
+
+# /* CAN FD payload length and DLC definitions according to ISO 11898-7 */
+# #define CANFD_MAX_DLC 15
+# #define CANFD_MAX_DLEN 64
+
+# /*
+#  * CAN XL payload length and DLC definitions according to ISO 11898-1
+#  * CAN XL DLC ranges from 0 .. 2047 => data length from 1 .. 2048 byte
+#  */
+# #define CANXL_MIN_DLC 0
+# #define CANXL_MAX_DLC 2047
+# #define CANXL_MAX_DLC_MASK 0x07FF
+# #define CANXL_MIN_DLEN 1
+# #define CANXL_MAX_DLEN 2048
