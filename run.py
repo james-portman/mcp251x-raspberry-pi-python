@@ -131,7 +131,7 @@ def setMode(mode):
         return ERROR_FAIL
 
 def prepareId(ext, id):
-    buffer = []
+    buffer = [0, 0, 0, 0]
     canid = id & 0x0FFFF
 
     if ext:
