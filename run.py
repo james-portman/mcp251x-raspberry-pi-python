@@ -11,19 +11,13 @@ def main():
 	spi.max_speed_hz = 10000000
 	spi.mode = 0
 
-	# for 16mhz, 1mbit can:
-	MCP_16MHz_1000kBPS_CFG1
-	MCP_16MHz_1000kBPS_CFG2
-	MCP_16MHz_1000kBPS_CFG3
+	if reset() != ERROR_OK:
+		print("some error running reset")
+		exit(1)
 
-	# MCP_16MHz_500kBPS_CFG1
-	# MCP_16MHz_500kBPS_CFG2
-	# MCP_16MHz_500kBPS_CFG3
-
-
-	spi.xfer2([INSTRUCTION_RESET])
-
-	time.sleep(0.010)
+	if setBitrate(CAN_1000KBPS, MCP_16MHZ) != ERROR_OK:
+		print("error setting bitrate")
+		exit(1)
 
 
 	reply = spi.xfer2([INSTRUCTION_READ, MCP_RXF0SIDH, 0])
@@ -171,6 +165,243 @@ def setFilterMask(mask, ext, ulData):
 
     setRegisters(reg, tbufdata, 4)
     return ERROR_OK
+
+
+def setBitrate(canSpeed, canClock):
+
+    ERROR error = setConfigMode();
+    if (error != ERROR_OK):
+        return error
+
+    set = 1
+
+    # MOVE THIS OUT TO THE INCLUDE?
+    if canClock == MCP_8MHZ:
+        if canSpeed == CAN_5KBPS:
+            cfg1 = MCP_8MHz_5kBPS_CFG1;
+            cfg2 = MCP_8MHz_5kBPS_CFG2;
+            cfg3 = MCP_8MHz_5kBPS_CFG3;
+
+        elif canSpeed == CAN_10KBPS:
+            cfg1 = MCP_8MHz_10kBPS_CFG1;
+            cfg2 = MCP_8MHz_10kBPS_CFG2;
+            cfg3 = MCP_8MHz_10kBPS_CFG3;
+
+
+        elif canSpeed == CAN_20KBPS:
+            cfg1 = MCP_8MHz_20kBPS_CFG1;
+            cfg2 = MCP_8MHz_20kBPS_CFG2;
+            cfg3 = MCP_8MHz_20kBPS_CFG3;
+
+        elif canSpeed == CAN_31K25BPS:
+            cfg1 = MCP_8MHz_31k25BPS_CFG1;
+            cfg2 = MCP_8MHz_31k25BPS_CFG2;
+            cfg3 = MCP_8MHz_31k25BPS_CFG3;
+
+        elif canSpeed == CAN_33KBPS:
+            cfg1 = MCP_8MHz_33k3BPS_CFG1;
+            cfg2 = MCP_8MHz_33k3BPS_CFG2;
+            cfg3 = MCP_8MHz_33k3BPS_CFG3;
+
+        elif canSpeed == CAN_40KBPS:
+            cfg1 = MCP_8MHz_40kBPS_CFG1;
+            cfg2 = MCP_8MHz_40kBPS_CFG2;
+            cfg3 = MCP_8MHz_40kBPS_CFG3;
+
+        elif canSpeed == CAN_50KBPS:
+            cfg1 = MCP_8MHz_50kBPS_CFG1;
+            cfg2 = MCP_8MHz_50kBPS_CFG2;
+            cfg3 = MCP_8MHz_50kBPS_CFG3;
+
+        elif canSpeed == CAN_80KBPS:
+            cfg1 = MCP_8MHz_80kBPS_CFG1;
+            cfg2 = MCP_8MHz_80kBPS_CFG2;
+            cfg3 = MCP_8MHz_80kBPS_CFG3;
+
+        elif canSpeed == CAN_100KBPS:
+            cfg1 = MCP_8MHz_100kBPS_CFG1;
+            cfg2 = MCP_8MHz_100kBPS_CFG2;
+            cfg3 = MCP_8MHz_100kBPS_CFG3;
+
+        elif canSpeed == CAN_125KBPS:
+            cfg1 = MCP_8MHz_125kBPS_CFG1;
+            cfg2 = MCP_8MHz_125kBPS_CFG2;
+            cfg3 = MCP_8MHz_125kBPS_CFG3;
+
+        elif canSpeed == CAN_200KBPS:
+            cfg1 = MCP_8MHz_200kBPS_CFG1;
+            cfg2 = MCP_8MHz_200kBPS_CFG2;
+            cfg3 = MCP_8MHz_200kBPS_CFG3;
+
+        elif canSpeed == CAN_250KBPS:
+            cfg1 = MCP_8MHz_250kBPS_CFG1;
+            cfg2 = MCP_8MHz_250kBPS_CFG2;
+            cfg3 = MCP_8MHz_250kBPS_CFG3;
+
+        elif canSpeed == CAN_500KBPS:
+            cfg1 = MCP_8MHz_500kBPS_CFG1;
+            cfg2 = MCP_8MHz_500kBPS_CFG2;
+            cfg3 = MCP_8MHz_500kBPS_CFG3;
+
+        elif canSpeed == CAN_1000KBPS:
+            cfg1 = MCP_8MHz_1000kBPS_CFG1;
+            cfg2 = MCP_8MHz_1000kBPS_CFG2;
+            cfg3 = MCP_8MHz_1000kBPS_CFG3;
+
+        else:
+            set = 0
+
+    elif canClock == MCP_16MHZ:
+        if canSpeed == CAN_5KBPS:
+            cfg1 = MCP_16MHz_5kBPS_CFG1;
+            cfg2 = MCP_16MHz_5kBPS_CFG2;
+            cfg3 = MCP_16MHz_5kBPS_CFG3;
+
+        elif canSpeed == CAN_10KBPS:
+            cfg1 = MCP_16MHz_10kBPS_CFG1;
+            cfg2 = MCP_16MHz_10kBPS_CFG2;
+            cfg3 = MCP_16MHz_10kBPS_CFG3;
+
+        elif canSpeed == CAN_20KBPS:
+            cfg1 = MCP_16MHz_20kBPS_CFG1;
+            cfg2 = MCP_16MHz_20kBPS_CFG2;
+            cfg3 = MCP_16MHz_20kBPS_CFG3;
+
+        elif canSpeed == CAN_33KBPS:
+            cfg1 = MCP_16MHz_33k3BPS_CFG1;
+            cfg2 = MCP_16MHz_33k3BPS_CFG2;
+            cfg3 = MCP_16MHz_33k3BPS_CFG3;
+
+        elif canSpeed == CAN_40KBPS:
+            cfg1 = MCP_16MHz_40kBPS_CFG1;
+            cfg2 = MCP_16MHz_40kBPS_CFG2;
+            cfg3 = MCP_16MHz_40kBPS_CFG3;
+
+        elif canSpeed == CAN_50KBPS:
+            cfg1 = MCP_16MHz_50kBPS_CFG1;
+            cfg2 = MCP_16MHz_50kBPS_CFG2;
+            cfg3 = MCP_16MHz_50kBPS_CFG3;
+
+        elif canSpeed == CAN_80KBPS:
+            cfg1 = MCP_16MHz_80kBPS_CFG1;
+            cfg2 = MCP_16MHz_80kBPS_CFG2;
+            cfg3 = MCP_16MHz_80kBPS_CFG3;
+
+        elif canSpeed == CAN_83K3BPS:
+            cfg1 = MCP_16MHz_83k3BPS_CFG1;
+            cfg2 = MCP_16MHz_83k3BPS_CFG2;
+            cfg3 = MCP_16MHz_83k3BPS_CFG3;
+
+        elif canSpeed == CAN_95KBPS:
+            cfg1 = MCP_16MHz_95kBPS_CFG1;
+            cfg2 = MCP_16MHz_95kBPS_CFG2;
+            cfg3 = MCP_16MHz_95kBPS_CFG3;
+
+        elif canSpeed == CAN_100KBPS:
+            cfg1 = MCP_16MHz_100kBPS_CFG1;
+            cfg2 = MCP_16MHz_100kBPS_CFG2;
+            cfg3 = MCP_16MHz_100kBPS_CFG3;
+
+        elif canSpeed == CAN_125KBPS:
+            cfg1 = MCP_16MHz_125kBPS_CFG1;
+            cfg2 = MCP_16MHz_125kBPS_CFG2;
+            cfg3 = MCP_16MHz_125kBPS_CFG3;
+
+        elif canSpeed == CAN_200KBPS:
+            cfg1 = MCP_16MHz_200kBPS_CFG1;
+            cfg2 = MCP_16MHz_200kBPS_CFG2;
+            cfg3 = MCP_16MHz_200kBPS_CFG3;
+            break;
+
+        elif canSpeed == CAN_250KBPS:
+            cfg1 = MCP_16MHz_250kBPS_CFG1;
+            cfg2 = MCP_16MHz_250kBPS_CFG2;
+            cfg3 = MCP_16MHz_250kBPS_CFG3;
+
+        elif canSpeed == CAN_500KBPS:
+            cfg1 = MCP_16MHz_500kBPS_CFG1;
+            cfg2 = MCP_16MHz_500kBPS_CFG2;
+            cfg3 = MCP_16MHz_500kBPS_CFG3;
+
+        elif canSpeed == CAN_1000KBPS:
+            cfg1 = MCP_16MHz_1000kBPS_CFG1;
+            cfg2 = MCP_16MHz_1000kBPS_CFG2;
+            cfg3 = MCP_16MHz_1000kBPS_CFG3;
+
+        else:
+            set = 0
+
+    elif canClock == MCP_20MHZ:
+        if canSpeed == CAN_33KBPS:
+            cfg1 = MCP_20MHz_33k3BPS_CFG1;
+            cfg2 = MCP_20MHz_33k3BPS_CFG2;
+            cfg3 = MCP_20MHz_33k3BPS_CFG3;
+
+        elif canSpeed == CAN_40KBPS:
+            cfg1 = MCP_20MHz_40kBPS_CFG1;
+            cfg2 = MCP_20MHz_40kBPS_CFG2;
+            cfg3 = MCP_20MHz_40kBPS_CFG3;
+
+        elif canSpeed == CAN_50KBPS:
+            cfg1 = MCP_20MHz_50kBPS_CFG1;
+            cfg2 = MCP_20MHz_50kBPS_CFG2;
+            cfg3 = MCP_20MHz_50kBPS_CFG3;
+
+        elif canSpeed == CAN_80KBPS:
+            cfg1 = MCP_20MHz_80kBPS_CFG1;
+            cfg2 = MCP_20MHz_80kBPS_CFG2;
+            cfg3 = MCP_20MHz_80kBPS_CFG3;
+
+        elif canSpeed == CAN_83K3BPS:
+            cfg1 = MCP_20MHz_83k3BPS_CFG1;
+            cfg2 = MCP_20MHz_83k3BPS_CFG2;
+            cfg3 = MCP_20MHz_83k3BPS_CFG3;
+
+        elif canSpeed == CAN_100KBPS:
+            cfg1 = MCP_20MHz_100kBPS_CFG1;
+            cfg2 = MCP_20MHz_100kBPS_CFG2;
+            cfg3 = MCP_20MHz_100kBPS_CFG3;
+
+        elif canSpeed == CAN_125KBPS:
+            cfg1 = MCP_20MHz_125kBPS_CFG1;
+            cfg2 = MCP_20MHz_125kBPS_CFG2;
+            cfg3 = MCP_20MHz_125kBPS_CFG3;
+
+        elif canSpeed == CAN_200KBPS:
+            cfg1 = MCP_20MHz_200kBPS_CFG1;
+            cfg2 = MCP_20MHz_200kBPS_CFG2;
+            cfg3 = MCP_20MHz_200kBPS_CFG3;
+
+        elif canSpeed == CAN_250KBPS:
+            cfg1 = MCP_20MHz_250kBPS_CFG1;
+            cfg2 = MCP_20MHz_250kBPS_CFG2;
+            cfg3 = MCP_20MHz_250kBPS_CFG3;
+
+        elif canSpeed == CAN_500KBPS:
+            cfg1 = MCP_20MHz_500kBPS_CFG1;
+            cfg2 = MCP_20MHz_500kBPS_CFG2;
+            cfg3 = MCP_20MHz_500kBPS_CFG3;
+
+        elif canSpeed == CAN_1000KBPS:
+            cfg1 = MCP_20MHz_1000kBPS_CFG1;
+            cfg2 = MCP_20MHz_1000kBPS_CFG2;
+            cfg3 = MCP_20MHz_1000kBPS_CFG3;
+
+        else:
+            set = 0;
+
+    else:
+        set = 0;
+
+    if (set):
+        setRegister(MCP_CNF1, cfg1)
+        setRegister(MCP_CNF2, cfg2)
+        setRegister(MCP_CNF3, cfg3)
+        return ERROR_OK
+    else:
+        return ERROR_FAIL
+
+
 
 if __name__ == "__main__":
 	main():
